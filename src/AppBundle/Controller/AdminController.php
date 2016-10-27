@@ -56,4 +56,14 @@ class AdminController extends Controller
     {
         return $this->render('@App/invoiceList.html.twig');
     }
+
+    /**
+     * Chart
+     *
+     * @Route("/admin/chart", name="chart")
+     */
+    public function charttAction()
+    {
+        return $this->render('@App/chart.html.twig');
+    }
 }

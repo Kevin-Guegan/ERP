@@ -74,14 +74,14 @@
                     <li>
                         <a href="{{ path("admin") }}"><i class="fa fa-fw fa-dashboard"></i> Tableau de bord</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="{{ path("chart") }}"><i class="fa fa-fw fa-bar-chart-o"></i> Statistique</a>
                     </li>
 
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#devis"><i class="fa fa-fw fa-table"></i> Devis <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="devis" class="collapse">
-                            <li class="active">
+                            <li>
                                 <a href="{{ path("quote") }}">Créer devis</a>
                             </li>
                             <li>
@@ -114,19 +114,13 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Création de devis
+                            Statistique
                         </h1>
                     </div>
                 </div>
             </div>
         </div>
         <!-- /.row -->
-
-    </div>
-    <!-- /.container-fluid -->
-
-    </div>
-    <!-- /#page-wrapper -->
 
     </div>
     <!-- Morris Charts JavaScript -->
@@ -136,7 +130,6 @@
 
     </body>
 
-    </html>
 
 {% endblock %}
 
