@@ -33,7 +33,7 @@ class Customer
     private $address;
 
     /**
-     * @ORM\Column(name="address2", type="string", length=255)
+     * @ORM\Column(name="address2", type="string", length=255, nullable=true)
      */
     private $address2;
 

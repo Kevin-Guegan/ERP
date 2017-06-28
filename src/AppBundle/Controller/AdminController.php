@@ -2,8 +2,11 @@
 
 namespace AppBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use AppBundle\Entity\Customer;
+use AppBundle\Form\CustomerType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class AdminController extends Controller
 {
@@ -62,8 +65,75 @@ class AdminController extends Controller
      *
      * @Route("/admin/chart", name="chart")
      */
-    public function charttAction()
+    public function chartAction()
     {
         return $this->render('@App/chart.html.twig');
+    }
+
+    /**
+     * Create Customer
+     *
+     * @Route("/admin/customercreate", name="customercreate")
+     */
+    public function createCustomerAction(Request $request)
+    {
+        $customer = new Customer();
+        $form = $this->createForm(CustomerType::class, $customer);
+
+        if ($form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($customer);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Client bien créée.');
+
+            return $this->redirect($this->generateUrl('customer', array('id' => $customer->getId())));
+        }
+
+        return $this->render('@App/createCustomer.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * Check Customer
+     *
+     * @Route("/admin/customer", name="customer")
+     */
+    public function customerAction()
+    {
+
+    }
+
+    /**
+     * Customer List
+     *
+     * @Route("/admin/customerlist", name="customerlist")
+     */
+    public function customerlistAction()
+    {
+        $repository = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('AppBundle:Customer')
+        ;
+
+        $listCustomers = $repository->findAll();
+        $serializer = $this->get('jms_serializer');
+        $response = $serializer->serialize($listCustomers,'json');
+
+
+        return $this->render('@App/customerlist.html.twig', array('customers' => $response));
+    }
+
+
+    /**
+     * User Settings
+     *
+     * @Route("/admin/usersettings", name="usersettings")
+     */
+    public function userSettingsAction()
+    {
+        return $this->render('@App/usersettings.html.twig');
     }
 }
