@@ -3,7 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Customer;
+use AppBundle\Entity\Invoice;
+use AppBundle\Entity\Quote;
 use AppBundle\Form\CustomerType;
+use AppBundle\Form\InvoiceType;
+use AppBundle\Form\QuoteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,9 +29,24 @@ class AdminController extends Controller
      *
      * @Route("/admin/quote", name="quote")
      */
-    public function createQuoteAction()
+    public function createQuoteAction(Request $request)
     {
-        return $this->render('@App/createQuote.html.twig');
+        $quote = new Quote();
+        $form = $this->createForm(QuoteType::class, $quote);
+
+        if ($form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($quote);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Devis bien créée.');
+
+            return $this->redirect($this->generateUrl('quote', array('id' => $quote->getId())));
+        }
+
+        return $this->render('@App/createQuote.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
@@ -45,9 +64,24 @@ class AdminController extends Controller
      *
      * @Route("/admin/invoice", name="invoice")
      */
-    public function createInvoiceAction()
+    public function createInvoiceAction(Request $request)
     {
-        return $this->render('@App/createInvoice.html.twig');
+        $invoice = new Invoice();
+        $form = $this->createForm(InvoiceType::class, $invoice);
+
+        if ($form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($invoice);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Facture bien créée.');
+
+            return $this->redirect($this->generateUrl('invoice', array('id' => $invoice->getId())));
+        }
+
+        return $this->render('@App/createInvoice.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
