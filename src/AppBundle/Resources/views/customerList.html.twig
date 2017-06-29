@@ -114,11 +114,11 @@
     <!-- Morris Charts JavaScript -->
 
     <script>
-        var customer_list = {{ customers }};
-            console.log({{ customers | json_encode }});
+        //var url = {{ path("app_api_customer_getallcustomer") }};
         $(document).ready(function() {
             $('#example').DataTable({
-                "ajax": customer_list,
+                "ajax": "http://localhost/erp_projetm1/web/app_dev.php/api/customer",
+                "sAjaxDataProp":"",
                 "columns": [
                     {data: "name"},
                     {data: "address"},
