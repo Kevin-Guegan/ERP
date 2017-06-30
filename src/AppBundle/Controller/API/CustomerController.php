@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * Class CustomerController
@@ -25,12 +26,12 @@ class CustomerController extends FOSRestController
      */
     public function getAllCustomer(): View
     {
-        $anomalies = $this->getDoctrine()->getRepository('AppBundle:Customer')->findAll();
+        $customers = $this->getDoctrine()->getRepository('AppBundle:Customer')->findAll();
 
-        if (count($anomalies) == 0) {
-            throw new NotFoundHttpException('Anomaly not found');
+        if (count($customers) == 0) {
+            throw new NotFoundHttpException('Customers not found');
         } else {
-            $view = $this->view($anomalies, 200)->setFormat('json');
+            $view = $this->view($customers, 200)->setFormat('json');
         }
 
         return $view;

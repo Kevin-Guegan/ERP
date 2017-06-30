@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="row">
-                    <table id="example" class="display" cellspacing="0" width="100%">
+                    <table id="customerlist" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th>Raison sociale</th>
@@ -114,10 +114,9 @@
     <!-- Morris Charts JavaScript -->
 
     <script>
-        //var url = {{ path("app_api_customer_getallcustomer") }};
         $(document).ready(function() {
-            $('#example').DataTable({
-                "ajax": "http://localhost/erp_projetm1/web/app_dev.php/api/customer",
+            $('#customerlist').DataTable({
+                "ajax": "{{ path("app_api_customer_getallcustomer") }}",
                 "sAjaxDataProp":"",
                 "columns": [
                     {data: "name"},

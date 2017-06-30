@@ -1,3 +1,0 @@
-users:
-    resource: AppBundle\Controller\UsersController
-    type:     rest

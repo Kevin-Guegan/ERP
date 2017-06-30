@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}" />
     </head>
     <body>
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
 
     <div id="wrapper">
 
@@ -74,15 +76,52 @@
                         </h1>
                     </div>
                 </div>
+                <div class="row">
+                    <table id="invoicelist" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Client</th>
+                            <th>Montant HT</th>
+                            <th>TVA</th>
+                            <th>Montant TTC</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Client</th>
+                            <th>Montant HT</th>
+                            <th>TVA</th>
+                            <th>Montant TTC</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-        <!-- /.row -->
-
-    </div>
     <!-- /.container-fluid -->
 
     </div>
     <!-- /#page-wrapper -->
+
+    <script>
+        $(document).ready(function() {
+            $('#invoicelist').DataTable({
+                    "ajax": "{{ path("app_api_invoice_getallinvoice") }}",
+                    "sAjaxDataProp":"",
+                    "columns": [
+                        {data: "number"},
+                        {data: "customer_id.name"},
+                        {data: "totalprice_h_t"},
+                        {data: "vat_id.name"},
+                        {data: "totalprice_t_t_c"}
+                    ]
+                }
+
+            );
+        } );
+    </script>
 
     </div>
     <!-- Morris Charts JavaScript -->
