@@ -132,11 +132,34 @@ class AdminController extends Controller
     /**
      * Check Customer
      *
-     * @Route("/admin/customer", name="customer")
+     * @Route("/admin/customer/{id}", name="customer", requirements={"page": "\d+"})
      */
-    public function customerAction()
+    public function customerAction(Request $request, $id)
     {
+        $em = $this->getDoctrine()->getManager();
+        $customer = $em->getRepository('AppBundle:Customer')
+           ->find($id);
 
+        if (!$customer){
+           throw $this->createNotFoundException(
+               'No Customer Found for id :'.$id
+           );
+        }
+
+        $form = $this->createForm(CustomerType::class, $customer);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('customer', array('id' => $customer->getId())));
+        }
+
+        return $this->render('@App/customer.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 
     /**
