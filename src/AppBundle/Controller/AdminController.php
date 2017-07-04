@@ -27,7 +27,7 @@ class AdminController extends Controller
     /**
      * Create quote
      *
-     * @Route("/admin/quote", name="quote")
+     * @Route("/admin/quotecreate", name="quotecreate")
      */
     public function createQuoteAction(Request $request)
     {
@@ -50,6 +50,39 @@ class AdminController extends Controller
     }
 
     /**
+     * Check Quote
+     *
+     * @Route("/admin/quote/{id}", name="quote", requirements={"page": "\d+"})
+     */
+    public function quoteAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $quote = $em->getRepository('AppBundle:Quote')
+            ->find($id);
+
+        if (!$quote){
+            throw $this->createNotFoundException(
+                'No Customer Found for id :'.$id
+            );
+        }
+
+        $form = $this->createForm(QuoteType::class, $quote);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('quote', array('id' => $quote->getId())));
+        }
+
+        return $this->render('@App/quote.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
      * List of quote
      *
      * @Route("/admin/quotelist", name="quotelist")
@@ -62,7 +95,7 @@ class AdminController extends Controller
     /**
      * Create invoice
      *
-     * @Route("/admin/invoice", name="invoice")
+     * @Route("/admin/invoicecreate", name="invoicecreate")
      */
     public function createInvoiceAction(Request $request)
     {
@@ -81,6 +114,39 @@ class AdminController extends Controller
 
         return $this->render('@App/createInvoice.html.twig', array(
             'form' => $form->createView(),
+        ));
+    }
+
+    /**
+     * Check Invoice
+     *
+     * @Route("/admin/invoice/{id}", name="invoice", requirements={"page": "\d+"})
+     */
+    public function invoiceAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $invoice = $em->getRepository('AppBundle:Invoice')
+            ->find($id);
+
+        if (!$invoice){
+            throw $this->createNotFoundException(
+                'No Invoice Found for id :'.$id
+            );
+        }
+
+        $form = $this->createForm(InvoiceType::class, $invoice);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('invoice', array('id' => $invoice->getId())));
+        }
+
+        return $this->render('@App/invoice.html.twig', array(
+            'form' => $form->createView()
         ));
     }
 
