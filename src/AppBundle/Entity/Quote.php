@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +53,28 @@ class Quote
      */
     private $totalpriceTTC;
 
+    /**
+     *
+     *
+     * @ORM\OneToMany(targetEntity="Quoteline", mappedBy="quoteId", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $quoteline;
+
+    /**
+     * @return mixed
+     */
+    public function getQuoteline()
+    {
+        return $this->quoteline;
+    }
+
+    /**
+     * @param mixed $quoteline
+     */
+    public function setQuoteline($quoteline)
+    {
+        $this->quoteline = $quoteline;
+    }
 
     /**
      * Get id

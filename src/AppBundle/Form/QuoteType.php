@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,7 +23,14 @@ class QuoteType extends AbstractType
             ->add('totalpriceHT', MoneyType::class , array('label' => 'Prix total HT'))
             ->add('totalpriceTTC', MoneyType::class , array('label' => 'Prix total TTC'))
             ->add('customerId', EntityType::class, array('class' => 'AppBundle:Customer', 'choice_label' => 'name', 'label' => 'Nom du client'))
-            ->add('vatId', EntityType::class, array('class' => 'AppBundle:Vat', 'choice_label' => 'name', 'label' => 'TVA'))
+            ->add('vatId', EntityType::class, array('class' => 'AppBundle:Vat', 'choice_label' => 'name', 'label' => 'TVA'));
+
+        //Ajout des lignes
+        $builder->add('quoteline', CollectionType::class, array(
+                'entry_type' => QuotelineType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ))
             ->add('save', SubmitType::class, array('label' => 'Enregistrer'))
         ;
     }

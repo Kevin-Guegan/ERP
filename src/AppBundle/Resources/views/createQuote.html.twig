@@ -77,6 +77,40 @@
                 <div class="row">
                     <div class="col-lg-12">
                         {{ form_start(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.number) }}
+                            {{ form_widget(form.number) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.totalpriceHT) }}
+                            {{ form_widget(form.totalpriceHT) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.totalpriceTTC) }}
+                            {{ form_widget(form.totalpriceTTC) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.customerId) }}
+                            {{ form_widget(form.customerId) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.vatId) }}
+                            {{ form_widget(form.vatId) }}
+                        </div>
+
+                        <div class="quoteline form-group" data-prototype="{{ form_widget(form.quoteline.vars.prototype)|e }}">
+                            {% block _quoteline_entry_widget %}
+                                <tr>
+                                    <td>{{ form_widget(form.quoteline) }}</td>
+                                    <td>{{ form_widget(form.quoteline) }}</td>
+                                </tr>
+                            {% endblock %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.save) }}
+                            {{ form_widget(form.save) }}
+                        </div>
                         {{ form_end(form) }}
                     </div>
                 </div>
@@ -92,6 +126,68 @@
 
     </div>
     <!-- Morris Charts JavaScript -->
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+        var $collectionHolder;
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<button type="button" class="add_quoteline_link btn btn-success">Ajouter une ligne</button>');
+        var $newLinkLi = $('<div></div>').append($addTagLink);
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('div.quoteline');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder, $newLinkLi);
+            });
+        });
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<div></div>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<button type="button" class="btn btn-danger remove-line">Supprimer</button>');
+
+            $newLinkLi.before($newFormLi);
+
+            $('.remove-line').click(function(e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+
+                return false;
+            });
+        }
+
+
+    </script>
     <script src="{{ asset('assets/js/morris.min.js') }}"></script>
     <script src="{{ asset('assets/js/morris-data.js') }}"></script>
     <script src="{{ asset('assets/js/raphael.min.js') }}"></script>
