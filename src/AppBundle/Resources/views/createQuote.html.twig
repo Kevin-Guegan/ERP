@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
-
+{% import _self as macro %}
 {% block content %}
+
     <head>
         <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/css/sb-admin.css') }}" />
@@ -10,6 +11,35 @@
     <body>
 
     <div id="wrapper">
+
+        {% macro quotelineCollection(form) %}
+            <div class="row">
+                <div class="form-group">
+                    {% if form.name is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name,{'attr':{'class':'form-row'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+                    {% endif %}
+                    {% if form.unitprice is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.unitprice) }}
+                            {{ form_widget(form.unitprice,{'attr':{'class':'form-row'}}) }}
+                            {{ form_errors(form.unitprice) }}
+                        </div>
+                    {% endif %}
+                    {% if form.quantity is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.quantity) }}
+                            {{ form_widget(form.quantity,{'attr':{'class':'form-row'}}) }}
+                            {{ form_errors(form.quantity) }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group col-md-3"></div>
+                </div>
+            </div>
+        {% endmacro %}
 
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -97,16 +127,15 @@
                             {{ form_label(form.vatId) }}
                             {{ form_widget(form.vatId) }}
                         </div>
-
-                        <div class="quoteline form-group" data-prototype="{{ form_widget(form.quoteline.vars.prototype)|e }}">
-                            {% block _quoteline_entry_widget %}
-                                <tr>
-                                    <td>{{ form_widget(form.quoteline) }}</td>
-                                    <td>{{ form_widget(form.quoteline) }}</td>
-                                </tr>
-                            {% endblock %}
+                        <div class="row">
+                            <div class="form-group col-md-12"> Ligne(s) du devis</div>
                         </div>
-
+                        <div class="quoteline" data-prototype="{{ macro.quotelineCollection(form.quoteline.vars.prototype)|e }}">
+                            {% for form in form.quoteline %}
+                                {{ macro.quotelineCollection(form) }}
+                            {% endfor %}
+                        </div>
+                        <br>
                         <div class="form-group">
                             {{ form_label(form.save) }}
                             {{ form_widget(form.save) }}
@@ -131,7 +160,7 @@
         var $collectionHolder;
 
         // setup an "add a tag" link
-        var $addTagLink = $('<button type="button" class="add_quoteline_link btn btn-success">Ajouter une ligne</button>');
+        var $addTagLink = $('<br><button type="button" class="add_quoteline_link btn btn-success">Ajouter une ligne</button>');
         var $newLinkLi = $('<div></div>').append($addTagLink);
 
         jQuery(document).ready(function() {
