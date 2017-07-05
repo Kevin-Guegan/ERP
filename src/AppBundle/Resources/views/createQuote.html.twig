@@ -14,7 +14,7 @@
 
         {% macro quotelineCollection(form) %}
             <div class="row">
-                <div class="form-group">
+                <div class="form-group ligne">
                     {% if form.name is defined %}
                         <div class="form-group col-md-3">
                             {{ form_label(form.name) }}
@@ -25,18 +25,22 @@
                     {% if form.unitprice is defined %}
                         <div class="form-group col-md-3">
                             {{ form_label(form.unitprice) }}
-                            {{ form_widget(form.unitprice,{'attr':{'class':'form-row'}}) }}
+                            {{ form_widget(form.unitprice,{'attr':{'class':'form-row price'}}) }}
                             {{ form_errors(form.unitprice) }}
                         </div>
                     {% endif %}
                     {% if form.quantity is defined %}
                         <div class="form-group col-md-3">
                             {{ form_label(form.quantity) }}
-                            {{ form_widget(form.quantity,{'attr':{'class':'form-row'}}) }}
+                            {{ form_widget(form.quantity,{'attr':{'class':'form-row quantity'}}) }}
                             {{ form_errors(form.quantity) }}
                         </div>
                     {% endif %}
-                    <div class="form-group col-md-3"></div>
+                    <div class="form-group col-md-3">
+                        {{ form_label(form.totalht) }}
+                        {{ form_widget(form.totalht,{'attr':{'class':'form-row sum'}}) }}
+                        {{ form_errors(form.totalht) }}
+                    </div>
                 </div>
             </div>
         {% endmacro %}
@@ -157,6 +161,24 @@
     <!-- Morris Charts JavaScript -->
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script>
+        function calculPrice() {
+
+
+            $('.ligne').each(function () {
+                var quantity, price, sum = 0;
+
+                price = $(this).children().children('.price').val();
+                quantity = $(this).children().children('.quantity').val();
+
+                if (!isNaN(price) && !isNaN(quantity)) {
+                    sum += price * quantity;
+                }
+
+                $(this).children().children('input.sum').val(sum)
+
+            })
+        }
+        
         var $collectionHolder;
 
         // setup an "add a tag" link
@@ -173,13 +195,16 @@
             // count the current form inputs we have (e.g. 2), use that as the new
             // index when inserting a new item (e.g. 2)
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
-
             $addTagLink.on('click', function (e) {
                 // prevent the link from creating a "#" on the URL
                 e.preventDefault();
 
                 // add a new tag form (see next code block)
                 addTagForm($collectionHolder, $newLinkLi);
+            })
+
+            $('.quantity').focusout(function(){
+                calculPrice();
             });
         });
 

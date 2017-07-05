@@ -21,7 +21,8 @@ class QuotelineType extends AbstractType
         $builder
             ->add('name', TextType::class, array('label' => 'Nom'))
             ->add('quantity', TextType::class, array('label' => 'Quantité'))
-            ->add('unitprice', TextType::class, array('label' => 'Prix Unitaire'))
+            ->add('unitprice', TextType::class, array('label' => 'Prix unitaire HT'))
+            ->add('totalht', TextType::class, array('label' => 'Total HT', "mapped" => false, 'disabled' => true))
         ;
     }
     
