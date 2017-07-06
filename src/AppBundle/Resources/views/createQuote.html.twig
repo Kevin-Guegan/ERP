@@ -149,6 +149,7 @@
                 </div>
             </div>
         </div>
+        <input type="text" class="quantity">
         <!-- /.row -->
 
     </div>
@@ -161,6 +162,10 @@
     <!-- Morris Charts JavaScript -->
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script>
+        var totalprice = 0;
+        var totalHT = $('#appbundle_quote_totalpriceHT');
+        var tva = $("#appbundle_quote_vatId").find(":selected").text().replace("%","");
+        var totalTTC = $('#appbundle_quote_totalpriceTTC');
         function calculPrice() {
 
 
@@ -174,11 +179,13 @@
                     sum += price * quantity;
                 }
 
-                $(this).children().children('input.sum').val(sum)
+                $(this).children().children('input.sum').val(sum);
 
             })
+
+            totalprice = 0;
         }
-        
+
         var $collectionHolder;
 
         // setup an "add a tag" link
@@ -203,10 +210,37 @@
                 addTagForm($collectionHolder, $newLinkLi);
             })
 
-            $('.quantity').focusout(function(){
-                calculPrice();
-            });
         });
+
+        $(document).on('input', '.quantity',  function() {
+            calculPrice();
+            sum();
+            calculTTC();
+        });
+
+        $(document).on('input', '.price',  function() {
+            calculPrice();
+            sum();
+            calculTTC();
+        });
+
+        $('select').on('change', function() {
+            tva = $("#appbundle_quote_vatId").find(":selected").text().replace("%","");
+            calculTTC();
+        });
+
+        function sum() {
+
+            $('.sum').each(function(){
+                totalprice += parseFloat(this.value);
+            });
+
+            totalHT.val(totalprice);
+        }
+
+        function calculTTC(){
+            totalTTC.val(totalprice+(totalprice * (tva/100)));
+        }
 
         function addTagForm($collectionHolder, $newLinkLi) {
             // Get the data-prototype explained earlier
@@ -235,7 +269,8 @@
                 e.preventDefault();
 
                 $(this).parent().remove();
-
+                totalHT.val(0);
+                totalTTC.val(0);
                 return false;
             });
         }
