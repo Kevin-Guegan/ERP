@@ -87,6 +87,7 @@
                             <th>Complément d'adresse</th>
                             <th>Code postal.</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -96,6 +97,7 @@
                             <th>Complément d'adresse</th>
                             <th>Code postal.</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -123,7 +125,11 @@
                     {data: "address"},
                     {data: "address2"},
                     {data: "zipcode"},
-                    {data: "email"}
+                    {data: "email"},
+                    {
+                        data: null,
+                        "defaultContent" : '<button type="button" src="{{ path("admin") }}" class="btn btn-info">Edit</button>'
+                    }
                 ]
                 }
 
