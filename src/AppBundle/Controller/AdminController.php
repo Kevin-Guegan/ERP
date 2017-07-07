@@ -115,6 +115,12 @@ class AdminController extends Controller
             $em->persist($invoice);
             $em->flush();
 
+            //Mettre à jour la table invoiceline avec le dernier Id de devis, à modifier voir coté Entité
+            $updateInvoiceline = 'Update invoiceline set invoiceId = '.$invoice->getId().' WHERE invoiceId IS NULL ;';
+
+            $statement = $em->getConnection()->prepare($updateInvoiceline);
+            $statement->execute();
+
             $request->getSession()->getFlashBag()->add('notice', 'Facture bien créée.');
 
             return $this->redirect($this->generateUrl('invoice', array('id' => $invoice->getId())));

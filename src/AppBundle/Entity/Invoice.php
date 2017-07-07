@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,6 +54,29 @@ class Invoice
      * @ORM\Column(name="totalpriceTTC", type="string", length=255)
      */
     private $totalpriceTTC;
+
+    /**
+     *
+     *
+     * @ORM\OneToMany(targetEntity="Invoiceline", mappedBy="invoiceId", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $invoiceline;
+
+    /**
+     * @return mixed
+     */
+    public function getInvoiceline()
+    {
+        return $this->invoiceline;
+    }
+
+    /**
+     * @param mixed $invoiceline
+     */
+    public function setInvoiceline($invoiceline)
+    {
+        $this->invoiceline = $invoiceline;
+    }
 
     /**
      * Get id

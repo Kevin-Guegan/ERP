@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% import _self as macro %}
 {% block content %}
     <head>
         <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}" />
@@ -10,7 +10,38 @@
     <body>
 
     <div id="wrapper">
-
+        {% macro invoicelineCollection(form) %}
+            <div class="row">
+                <div class="form-group ligne">
+                    {% if form.name is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.name) }}
+                            {{ form_widget(form.name,{'attr':{'class':'form-row'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+                    {% endif %}
+                    {% if form.unitprice is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.unitprice) }}
+                            {{ form_widget(form.unitprice,{'attr':{'class':'form-row price'}}) }}
+                            {{ form_errors(form.unitprice) }}
+                        </div>
+                    {% endif %}
+                    {% if form.quantity is defined %}
+                        <div class="form-group col-md-3">
+                            {{ form_label(form.quantity) }}
+                            {{ form_widget(form.quantity,{'attr':{'class':'form-row quantity'}}) }}
+                            {{ form_errors(form.quantity) }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group col-md-3">
+                        {{ form_label(form.totalht) }}
+                        {{ form_widget(form.totalht,{'attr':{'class':'form-row sum'}}) }}
+                        {{ form_errors(form.totalht) }}
+                    </div>
+                </div>
+            </div>
+        {% endmacro %}
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -75,10 +106,44 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12">
-                        {{ form_start(form) }}
-                        {{ form_end(form) }}
-                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {{ form_start(form) }}
+                            <div class="form-group">
+                                {{ form_label(form.number) }}
+                                {{ form_widget(form.number) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.totalpriceHT) }}
+                                {{ form_widget(form.totalpriceHT) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.totalpriceTTC) }}
+                                {{ form_widget(form.totalpriceTTC) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.customerId) }}
+                                {{ form_widget(form.customerId) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.vatId) }}
+                                {{ form_widget(form.vatId) }}
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12"> Ligne(s) de la facture</div>
+                            </div>
+                            <div class="invoiceline" data-prototype="{{ macro.invoicelineCollection(form.invoiceline.vars.prototype)|e }}">
+                                {% for form in form.invoiceline %}
+                                    {{ macro.invoicelineCollection(form) }}
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                {{ form_label(form.save) }}
+                                {{ form_widget(form.save) }}
+                            </div>
+                            {{ form_end(form) }}
+                        </div>
                 </div>
             </div>
         </div>
@@ -92,6 +157,126 @@
 
     </div>
     <!-- Morris Charts JavaScript -->
+
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+        var totalprice = 0;
+        var totalHT = $('#appbundle_invoice_totalpriceHT');
+        var tva = $("#appbundle_invoice_vatId").find(":selected").text().replace("%","");
+        var totalTTC = $('#appbundle_invoice_totalpriceTTC');
+        function calculPrice() {
+
+
+            $('.ligne').each(function () {
+                var quantity, price, sum = 0;
+
+                price = $(this).children().children('.price').val();
+                quantity = $(this).children().children('.quantity').val();
+
+                if (!isNaN(price) && !isNaN(quantity)) {
+                    sum += price * quantity;
+                }
+
+                $(this).children().children('input.sum').val(sum);
+
+            })
+
+            totalprice = 0;
+        }
+
+        var $collectionHolder;
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<br><button type="button" class="add_invoiceline_link btn btn-success">Ajouter une ligne</button>');
+        var $newLinkLi = $('<div></div>').append($addTagLink);
+
+        jQuery(document).ready(function() {
+            totalHT.prop('readonly', true);
+            totalTTC.prop('readonly', true);
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('div.invoiceline');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder, $newLinkLi);
+            })
+
+        });
+
+        $(document).on('input', '.quantity',  function() {
+            calculPrice();
+            sum();
+            calculTTC();
+        });
+
+        $(document).on('input', '.price',  function() {
+            calculPrice();
+            sum();
+            calculTTC();
+        });
+
+        $('select').on('change', function() {
+            tva = $("#appbundle_invoice_vatId").find(":selected").text().replace("%","");
+            calculTTC();
+        });
+
+        function sum() {
+
+            $('.sum').each(function(){
+                totalprice += parseFloat(this.value);
+            });
+
+            totalHT.val(totalprice);
+        }
+
+        function calculTTC(){
+            totalTTC.val(totalprice+(totalprice * (tva/100)));
+        }
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<div></div>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<button type="button" class="btn btn-danger remove-line">Supprimer</button>');
+
+            $newLinkLi.before($newFormLi);
+
+            $('.remove-line').click(function(e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+                totalHT.val(0);
+                totalTTC.val(0);
+                return false;
+            });
+        }
+
+
+    </script>
     <script src="{{ asset('assets/js/morris.min.js') }}"></script>
     <script src="{{ asset('assets/js/morris-data.js') }}"></script>
     <script src="{{ asset('assets/js/raphael.min.js') }}"></script>

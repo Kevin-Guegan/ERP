@@ -235,7 +235,7 @@
         });
 
         function sum() {
-
+            totalprice = 0;
             $('.sum').each(function(){
                 totalprice += parseFloat(this.value);
             });
@@ -244,6 +244,7 @@
         }
 
         function calculTTC(){
+            sum();
             totalTTC.val(totalprice+(totalprice * (tva/100)));
         }
 
