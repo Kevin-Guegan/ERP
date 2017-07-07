@@ -39,9 +39,17 @@ class AdminController extends Controller
             $em->persist($quote);
             $em->flush();
 
+
+            //Mettre à jour la table quoteline avec le dernier Id de devis, à modifier voir coté Entité
+            $updateQuoteline = 'Update quoteline set quoteId = '.$quote->getId().' WHERE quoteId IS NULL ;';
+
+            $statement = $em->getConnection()->prepare($updateQuoteline);
+            $statement->execute();
+
             $request->getSession()->getFlashBag()->add('notice', 'Devis bien créée.');
 
             return $this->redirect($this->generateUrl('quote', array('id' => $quote->getId())));
+
         }
 
         return $this->render('@App/createQuote.html.twig', array(

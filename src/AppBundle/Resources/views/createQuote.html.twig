@@ -149,7 +149,6 @@
                 </div>
             </div>
         </div>
-        <input type="text" class="quantity">
         <!-- /.row -->
 
     </div>
@@ -193,6 +192,8 @@
         var $newLinkLi = $('<div></div>').append($addTagLink);
 
         jQuery(document).ready(function() {
+            totalHT.prop('readonly', true);
+            totalTTC.prop('readonly', true);
             // Get the ul that holds the collection of tags
             $collectionHolder = $('div.quoteline');
 

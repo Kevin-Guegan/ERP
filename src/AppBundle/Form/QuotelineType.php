@@ -6,6 +6,7 @@ use AppBundle\Entity\Quoteline;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,8 +21,8 @@ class QuotelineType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, array('label' => 'Nom'))
-            ->add('quantity', TextType::class, array('label' => 'Quantité'))
-            ->add('unitprice', TextType::class, array('label' => 'Prix unitaire HT'))
+            ->add('quantity', NumberType::class, array('label' => 'Quantité'))
+            ->add('unitprice', NumberType::class, array('label' => 'Prix unitaire HT'))
             ->add('totalht', TextType::class, array('label' => 'Total HT', "mapped" => false, 'disabled' => true))
         ;
     }

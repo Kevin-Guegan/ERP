@@ -25,7 +25,7 @@ class Quoteline
     /**
      * @var Quote $quoteId
      *
-     * @ORM\ManyToOne(targetEntity="Quote", inversedBy="quoteline")
+     * @ORM\ManyToOne(targetEntity="Quote", inversedBy="quoteline", cascade={"persist"})
      * @ORM\JoinColumn(name="quoteId", referencedColumnName="id", nullable=true)
      */
     private $quoteId;

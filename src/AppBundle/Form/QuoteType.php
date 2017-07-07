@@ -20,8 +20,8 @@ class QuoteType extends AbstractType
     {
         $builder
             ->add('number', TextType::class, array('label' => 'N°'))
-            ->add('totalpriceHT', MoneyType::class , array('label' => 'Prix total HT', 'disabled' => true))
-            ->add('totalpriceTTC', MoneyType::class , array('label' => 'Prix total TTC', 'disabled' => true))
+            ->add('totalpriceHT', MoneyType::class , array('label' => 'Prix total HT'))
+            ->add('totalpriceTTC', MoneyType::class , array('label' => 'Prix total TTC'))
             ->add('customerId', EntityType::class, array('class' => 'AppBundle:Customer', 'choice_label' => 'name', 'label' => 'Nom du client'))
             ->add('vatId', EntityType::class, array('class' => 'AppBundle:Vat', 'choice_label' => 'name', 'label' => 'TVA'));
 
