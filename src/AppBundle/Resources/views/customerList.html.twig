@@ -9,6 +9,8 @@
     </head>
     <body>
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
 
 
@@ -127,14 +129,18 @@
                     {data: "zipcode"},
                     {data: "email"},
                     {
-                        data: null,
-                        "defaultContent" : '<button type="button" src="{{ path("admin") }}" class="btn btn-info">Edit</button>'
+                        data: "id",
+                        render: function (data){
+                            var url = Routing.generate('customer', {
+                                'id': +data
+                            });
+                            return '<a href="'+url+'" type="button" class="btn btn-info">Modifier</a>';
+                        }
                     }
                 ]
-                }
-
-            );
+            } );
         } );
+
     </script>
 
     </body>

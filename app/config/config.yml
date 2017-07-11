@@ -105,3 +105,7 @@ fos_rest:
         default_engine: twig
     routing_loader:
         default_format: json
+
+
+fos_js_routing:
+    routes_to_expose: [ (.*) ]

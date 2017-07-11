@@ -9,6 +9,8 @@
     </head>
     <body>
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
 
     <div id="wrapper">
@@ -85,6 +87,7 @@
                             <th>Montant HT</th>
                             <th>TVA</th>
                             <th>Montant TTC</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -94,6 +97,7 @@
                             <th>Montant HT</th>
                             <th>TVA</th>
                             <th>Montant TTC</th>
+                            <th>Action</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -121,7 +125,16 @@
                         {data: "customer_id.name"},
                         {data: "totalprice_h_t"},
                         {data: "vat_id.name"},
-                        {data: "totalprice_t_t_c"}
+                        {data: "totalprice_t_t_c"},
+                        {
+                            data: "id",
+                            render: function (data){
+                                var url = Routing.generate('quote', {
+                                    'id': +data
+                                });
+                                return '<a href="'+url+'" type="button" class="btn btn-info">Modifier</a>';
+                            }
+                        }
                     ]
                 }
 
