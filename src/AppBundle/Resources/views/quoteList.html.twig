@@ -86,6 +86,7 @@
                             <th>Client</th>
                             <th>Montant HT</th>
                             <th>TVA</th>
+                            <th>Date</th>
                             <th>Montant TTC</th>
                             <th>Action</th>
                         </tr>
@@ -96,6 +97,7 @@
                             <th>Client</th>
                             <th>Montant HT</th>
                             <th>TVA</th>
+                            <th>Date</th>
                             <th>Montant TTC</th>
                             <th>Action</th>
                         </tr>
@@ -125,11 +127,20 @@
                         {data: "customer_id.name"},
                         {data: "totalprice_h_t"},
                         {data: "vat_id.name"},
+                        {
+                            data: "create_date",
+                            render:function (value) {
+                                if (value === null) return "";
+                                var d = new Date(value);
+                                return d.getDay() + "/" + d.getMonth() + "/" + d.getFullYear();
+                            }
+
+                        },
                         {data: "totalprice_t_t_c"},
                         {
                             data: "id",
                             render: function (data){
-                                var url = Routing.generate('quote', {
+                                var url = Routing.generate('invoice', {
                                     'id': +data
                                 });
                                 return '<a href="'+url+'" type="button" class="btn btn-info">Modifier</a>';

@@ -54,6 +54,11 @@ class Quote
     private $totalpriceTTC;
 
     /**
+     * @ORM\Column(name="createDate", type="date", length=255)
+     */
+    private $createDate;
+
+    /**
      *
      *
      * @ORM\OneToMany(targetEntity="Quoteline", mappedBy="quoteId", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -204,5 +209,60 @@ class Quote
     public function getVatId()
     {
         return $this->vatId;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->quoteline = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set createDate
+     *
+     * @param \DateTime $createDate
+     *
+     * @return Quote
+     */
+    public function setCreateDate($createDate)
+    {
+        $this->createDate = $createDate;
+
+        return $this;
+    }
+
+    /**
+     * Get createDate
+     *
+     * @return \DateTime
+     */
+    public function getCreateDate()
+    {
+        return $this->createDate;
+    }
+
+    /**
+     * Add quoteline
+     *
+     * @param \AppBundle\Entity\Quoteline $quoteline
+     *
+     * @return Quote
+     */
+    public function addQuoteline(\AppBundle\Entity\Quoteline $quoteline)
+    {
+        $this->quoteline[] = $quoteline;
+
+        return $this;
+    }
+
+    /**
+     * Remove quoteline
+     *
+     * @param \AppBundle\Entity\Quoteline $quoteline
+     */
+    public function removeQuoteline(\AppBundle\Entity\Quoteline $quoteline)
+    {
+        $this->quoteline->removeElement($quoteline);
     }
 }
