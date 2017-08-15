@@ -9,6 +9,7 @@
     </head>
     <body>
 
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -73,6 +74,87 @@
                         <h1 class="page-header">
                             Statistique
                         </h1>
+                        {% for key,stat in stats %}
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h6 class="panel-title">{{stat.title}}</h6>
+                                </div>
+                                <div class="panel-body">
+                                    {% if stat.data|length > 1 %}
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            {% for key,data_info in stat.data %}
+                                                <li role="presentation" class="{% if loop.first %}active{% endif %}"><a href="#{{ stat.id }}{{ data_info.code_title }}" aria-controls="{{ stat.id }}{{ data_info.code_title }}" role="tab" data-toggle="tab" data-identifier="{{ stat.id }}{{ data_info.code_title }}">{{ data_info.title }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            {% for key,data_info in stat.data %}
+                                                <div role="tabpanel" class="tab-pane {% if loop.first %}active{% endif %}" id="{{ stat.id }}{{ data_info.code_title }}">
+                                                    {% if data_info.type == "Table" %}
+                                                        <table id="{{ stat.id }}{{ data_info.code_title }}_table" class="dataTable table-striped">
+                                                            <tbody>
+
+                                                            </tbody>
+                                                        </table>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {% for key,data_info in stat.data %}
+                                            <div id="{{ stat.id }}{{ data_info.code_title }}">
+                                                {% if data_info.type == "Table" %}
+                                                    <table id="{{ stat.id }}{{ data_info.code_title }}_table" class="dataTable">
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    </table>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <script>
+                                $(function () {
+                                    {% for key,data_info in stat.data %}
+                                    {% if data_info.type != "Table" %}
+                                    {{ stat.id }}{{ data_info.code_title }} = Morris.{{ data_info.type }}({
+                                        element: '{{ stat.id }}{{ data_info.code_title }}',
+                                        data: {{ data_info.data|json_encode()| raw }},
+                                        xkey: 'y',
+                                        ykeys: [{% for key,data_array in data_info.data.0 %}{% if key != 'y' %}'{{ key }}'{% endif %}{% if not loop.last and key != "y" %},{% endif %}{% endfor %}],
+                                        labels: [{% for key,data_array in data_info.data.0 %}{% if key != "y" %}'{{ key }}'{% endif %}{% if not loop.last and key != "y" %},{% endif %}{% endfor %}],
+                                        resize: true,
+                                        parseTime: false
+                                        {% else %}
+                                        $('#{{ stat.id }}{{ data_info.code_title }}_table').DataTable({
+                                        "data": {{ data_info.data | json_encode | raw }},
+                                        "columns": [
+                                            {% for key, data_array in data_info.data.0 %}
+                                            {
+                                                "title": {{ key | json_encode | raw }},
+                                                "data": {{ key | json_encode | raw }} }{% if not loop.last %},{% endif %}
+                                            {% endfor %}
+                                        ],
+                                        order: [0, 'desc']
+                                        {% endif %}
+                                    });
+                                    {% endfor %}
+
+                                    $('ul.nav a').on('shown.bs.tab', function (e) {
+                                        var types = $(this).attr("data-identifier");
+                                        var typesArray = types.split(",");
+                                        $.each(typesArray, function (key, value) {
+                                            eval(value + ".redraw()");
+                                        })
+                                    });
+                                });
+
+                            </script>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

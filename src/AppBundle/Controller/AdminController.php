@@ -181,7 +181,29 @@ class AdminController extends Controller
      */
     public function chartAction()
     {
-        return $this->render('@App/chart.html.twig');
+        $stats = array();
+
+        $quote_monthsthisyear = $this->getDoctrine()->getRepository('AppBundle:Quote')->getStatsQuotePricePerMonthsThisYear();
+
+        $stats_quotepermonththisyear = array();
+        $stats_quotepermonththisyear['title'] = "Devis par mois sur l'année ".date("Y");
+        $stats_quotepermonththisyear['id'] = "ano";
+        $stats_quotepermonththisyear['data'][] = array("title" => "Tout", "type" => "Line", "code_title" => "_all", "data"=>$quote_monthsthisyear);
+
+
+
+        $quote_monthslastyear = $this->getDoctrine()->getRepository('AppBundle:Quote')->getStatsQuotePricePerMonthsLastYear();
+
+        $stats_quotepermonthlastyear = array();
+        $stats_quotepermonthlastyear['title'] = "Devis par mois sur l'année ".date("Y");
+        $stats_quotepermonthlastyear['id'] = "ano2";
+        $stats_quotepermonthlastyear['data'][] = array("title" => "Tout", "type" => "Line", "code_title" => "_all", "data"=>$quote_monthslastyear);
+
+
+        $stats[] = $stats_quotepermonththisyear;
+        $stats[] = $stats_quotepermonthlastyear;
+
+        return $this->render('@App/chart.html.twig', compact('stats'));
     }
 
     /**

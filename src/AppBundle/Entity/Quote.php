@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="quote")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\QuoteRepository")
  */
 class Quote
 {
