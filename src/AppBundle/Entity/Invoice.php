@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -53,6 +54,35 @@ class Invoice
      * @ORM\Column(name="totalpriceTTC", type="string", length=255)
      */
     private $totalpriceTTC;
+
+
+    /**
+     * @ORM\Column(name="createDate", type="date", length=255)
+     */
+    private $createDate;
+
+    /**
+     *
+     *
+     * @ORM\OneToMany(targetEntity="Invoiceline", mappedBy="invoiceId", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $invoiceline;
+
+    /**
+     * @return mixed
+     */
+    public function getInvoiceline()
+    {
+        return $this->invoiceline;
+    }
+
+    /**
+     * @param mixed $invoiceline
+     */
+    public function setInvoiceline($invoiceline)
+    {
+        $this->invoiceline = $invoiceline;
+    }
 
     /**
      * Get id
@@ -182,5 +212,60 @@ class Invoice
     public function getVatId()
     {
         return $this->vatId;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->invoiceline = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set createDate
+     *
+     * @param \DateTime $createDate
+     *
+     * @return Invoice
+     */
+    public function setCreateDate($createDate)
+    {
+        $this->createDate = $createDate;
+
+        return $this;
+    }
+
+    /**
+     * Get createDate
+     *
+     * @return \DateTime
+     */
+    public function getCreateDate()
+    {
+        return $this->createDate;
+    }
+
+    /**
+     * Add invoiceline
+     *
+     * @param \AppBundle\Entity\Invoiceline $invoiceline
+     *
+     * @return Invoice
+     */
+    public function addInvoiceline(\AppBundle\Entity\Invoiceline $invoiceline)
+    {
+        $this->invoiceline[] = $invoiceline;
+
+        return $this;
+    }
+
+    /**
+     * Remove invoiceline
+     *
+     * @param \AppBundle\Entity\Invoiceline $invoiceline
+     */
+    public function removeInvoiceline(\AppBundle\Entity\Invoiceline $invoiceline)
+    {
+        $this->invoiceline->removeElement($invoiceline);
     }
 }

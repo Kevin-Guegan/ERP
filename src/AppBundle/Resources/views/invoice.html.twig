@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import _self as macro %}
 {% block content %}
-
     <head>
         <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('assets/css/sb-admin.css') }}" />
@@ -11,8 +10,7 @@
     <body>
 
     <div id="wrapper">
-
-        {% macro quotelineCollection(form) %}
+        {% macro invoicelineCollection(form) %}
             <div class="row">
                 <div class="form-group ligne">
                     {% if form.name is defined %}
@@ -44,7 +42,6 @@
                 </div>
             </div>
         {% endmacro %}
-
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -58,10 +55,11 @@
                     <li>
                         <a href="{{ path("chart") }}"><i class="fa fa-fw fa-bar-chart-o"></i> Statistique</a>
                     </li>
+
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#client"><i class="fa fa-fw fa-table"></i> Client <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="client" class="collapse">
-                            <li class="active">
+                            <li>
                                 <a href="{{ path("customercreate") }}"><i class="fa fa-plus-square"></i> Créer client</a>
                             </li>
                             <li>
@@ -69,10 +67,11 @@
                             </li>
                         </ul>
                     </li>
+
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#devis"><i class="fa fa-fw fa-table"></i> Devis <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="devis" class="collapse">
-                            <li class="active">
+                            <li>
                                 <a href="{{ path("quotecreate") }}"><i class="fa fa-plus-square"></i> Créer devis</a>
                             </li>
                             <li>
@@ -80,10 +79,11 @@
                             </li>
                         </ul>
                     </li>
+
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#invoice"><i class="fa fa-fw fa-edit"></i> Factures <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="invoice" class="collapse">
-                            <li>
+                            <li class="active">
                                 <a href="{{ path("invoicecreate") }}"><i class="fa fa-plus-square"></i> Créer facture</a>
                             </li>
                             <li>
@@ -104,53 +104,54 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Création de devis
+                            Modification d'une facture
                         </h1>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12">
-                        {{ form_start(form) }}
-                        <div class="form-group">
-                            {{ form_label(form.number) }}
-                            {{ form_widget(form.number) }}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {{ form_start(form) }}
+                            <div class="form-group">
+                                {{ form_label(form.number) }}
+                                {{ form_widget(form.number) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.totalpriceHT) }}
+                                {{ form_widget(form.totalpriceHT) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.totalpriceTTC) }}
+                                {{ form_widget(form.totalpriceTTC) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.customerId) }}
+                                {{ form_widget(form.customerId) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.vatId) }}
+                                {{ form_widget(form.vatId) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_label(form.createDate) }}
+                                {{ form_widget(form.createDate) }}
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12"> Ligne(s) de la facture</div>
+                            </div>
+                            <div class="invoiceline" data-prototype="{{ macro.invoicelineCollection(form.invoiceline.vars.prototype)|e }}">
+                                {% for form in form.invoiceline %}
+                                    {{ macro.invoicelineCollection(form) }}
+                                {% endfor %}
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                {{ form_label(form.save) }}
+                                {{ form_widget(form.save) }}
+                            </div>
+                            {{ form_end(form) }}
                         </div>
-                        <div class="form-group">
-                            {{ form_label(form.totalpriceHT) }}
-                            {{ form_widget(form.totalpriceHT) }}
-                        </div>
-                        <div class="form-group">
-                            {{ form_label(form.totalpriceTTC) }}
-                            {{ form_widget(form.totalpriceTTC) }}
-                        </div>
-                        <div class="form-group">
-                            {{ form_label(form.customerId) }}
-                            {{ form_widget(form.customerId) }}
-                        </div>
-                        <div class="form-group">
-                            {{ form_label(form.vatId) }}
-                            {{ form_widget(form.vatId) }}
-                        </div>
-                        <div class="form-group">
-                            {{ form_label(form.createDate) }}
-                            {{ form_widget(form.createDate) }}
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-12"> Ligne(s) du devis</div>
-                        </div>
-                        <div class="quoteline" data-prototype="{{ macro.quotelineCollection(form.quoteline.vars.prototype)|e }}">
-                            {% for form in form.quoteline %}
-                                {{ macro.quotelineCollection(form) }}
-                            {% endfor %}
-                        </div>
-                        <br>
-                        <div class="form-group">
-                            {{ form_label(form.save) }}
-                            {{ form_widget(form.save) }}
-                        </div>
-                        {{ form_end(form) }}
                     </div>
-                </div>
             </div>
         </div>
         <!-- /.row -->
@@ -166,9 +167,9 @@
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script>
         var totalprice = 0;
-        var totalHT = $('#appbundle_quote_totalpriceHT');
-        var tva = $("#appbundle_quote_vatId").find(":selected").text().replace("%","");
-        var totalTTC = $('#appbundle_quote_totalpriceTTC');
+        var totalHT = $('#appbundle_invoice_totalpriceHT');
+        var tva = $("#appbundle_invoice_vatId").find(":selected").text().replace("%","");
+        var totalTTC = $('#appbundle_invoice_totalpriceTTC');
         function calculPrice() {
 
 
@@ -192,14 +193,16 @@
         var $collectionHolder;
 
         // setup an "add a tag" link
-        var $addTagLink = $('<br><button type="button" class="add_quoteline_link btn btn-success">Ajouter une ligne</button>');
+        var $addTagLink = $('<br><button type="button" class="add_invoiceline_link btn btn-success">Ajouter une ligne</button>');
         var $newLinkLi = $('<div></div>').append($addTagLink);
 
         jQuery(document).ready(function() {
             totalHT.prop('readonly', true);
             totalTTC.prop('readonly', true);
+            calculPrice();
+
             // Get the ul that holds the collection of tags
-            $collectionHolder = $('div.quoteline');
+            $collectionHolder = $('div.invoiceline');
 
             // add the "add a tag" anchor and li to the tags ul
             $collectionHolder.append($newLinkLi);
@@ -230,12 +233,12 @@
         });
 
         $('select').on('change', function() {
-            tva = $("#appbundle_quote_vatId").find(":selected").text().replace("%","");
+            tva = $("#appbundle_invoice_vatId").find(":selected").text().replace("%","");
             calculTTC();
         });
 
         function sum() {
-
+            totalprice = 0;
             $('.sum').each(function(){
                 totalprice += parseFloat(this.value);
             });
@@ -244,6 +247,7 @@
         }
 
         function calculTTC(){
+            sum();
             totalTTC.val(totalprice+(totalprice * (tva/100)));
         }
 

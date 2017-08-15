@@ -8,6 +8,10 @@
         <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}" />
     </head>
     <body>
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
 
     <div id="wrapper">
 
@@ -28,10 +32,10 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#client"><i class="fa fa-fw fa-table"></i> Client <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="client" class="collapse">
                             <li class="active">
-                                <a href="{{ path("customercreate") }}">Créer client</a>
+                                <a href="{{ path("customercreate") }}"><i class="fa fa-plus-square"></i> Créer client</a>
                             </li>
                             <li>
-                                <a href="{{ path("customerlist") }}">Liste des clients</a>
+                                <a href="{{ path("customerlist") }}"><i class="fa fa-list"></i> Liste des clients</a>
                             </li>
                         </ul>
                     </li>
@@ -39,10 +43,10 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#devis"><i class="fa fa-fw fa-table"></i> Devis <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="devis" class="collapse">
                             <li>
-                                <a href="{{ path("quote") }}">Créer devis</a>
+                                <a href="{{ path("quotecreate") }}"><i class="fa fa-plus-square"></i> Créer devis</a>
                             </li>
                             <li class="active">
-                                <a href="{{ path("quotelist") }}">Liste des devis</a>
+                                <a href="{{ path("quotelist") }}"><i class="fa fa-list"></i> Liste des devis</a>
                             </li>
                         </ul>
                     </li>
@@ -50,10 +54,10 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#invoice"><i class="fa fa-fw fa-edit"></i> Factures <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="invoice" class="collapse">
                             <li>
-                                <a href="{{ path("invoice") }}">Créer facture</a>
+                                <a href="{{ path("invoicecreate") }}"><i class="fa fa-plus-square"></i> Créer facture</a>
                             </li>
                             <li>
-                                <a href="{{ path("invoicelist") }}">Liste des factures</a>
+                                <a href="{{ path("invoicelist") }}"><i class="fa fa-list"></i> Liste des factures</a>
                             </li>
                         </ul>
                     </li>
@@ -74,6 +78,32 @@
                         </h1>
                     </div>
                 </div>
+                <div class="row">
+                    <table id="quotelist" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Client</th>
+                            <th>Montant HT</th>
+                            <th>TVA</th>
+                            <th>Date</th>
+                            <th>Montant TTC</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Client</th>
+                            <th>Montant HT</th>
+                            <th>TVA</th>
+                            <th>Date</th>
+                            <th>Montant TTC</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
         <!-- /.row -->
@@ -83,6 +113,45 @@
 
     </div>
     <!-- /#page-wrapper -->
+
+    </div>
+    <!-- Morris Charts JavaScript -->
+
+    <script>
+        $(document).ready(function() {
+            $('#quotelist').DataTable({
+                    "ajax": "{{ path("app_api_quote_getallquote") }}",
+                    "sAjaxDataProp":"",
+                    "columns": [
+                        {data: "number"},
+                        {data: "customer_id.name"},
+                        {data: "totalprice_h_t"},
+                        {data: "vat_id.name"},
+                        {
+                            data: "create_date",
+                            render:function (value) {
+                                if (value === null) return "";
+                                var d = new Date(value);
+                                return d.getDay() + "/" + d.getMonth() + "/" + d.getFullYear();
+                            }
+
+                        },
+                        {data: "totalprice_t_t_c"},
+                        {
+                            data: "id",
+                            render: function (data){
+                                var url = Routing.generate('invoice', {
+                                    'id': +data
+                                });
+                                return '<a href="'+url+'" type="button" class="btn btn-info">Modifier</a>';
+                            }
+                        }
+                    ]
+                }
+
+            );
+        } );
+    </script>
 
     </div>
     <!-- Morris Charts JavaScript -->
